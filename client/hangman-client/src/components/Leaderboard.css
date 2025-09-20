@@ -1,0 +1,662 @@
+/* ============================================================================
+   LEADERBOARD COMPONENT STYLES - Top Players Ranking and Statistics
+   ============================================================================ */
+
+/* ============================================================================
+   LEADERBOARD CONTAINER & LAYOUT
+   ============================================================================ */
+
+.leaderboard-container {
+    min-height: calc(100vh - 70px); /* Account for navbar */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.leaderboard-content {
+    max-width: 1200px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    margin-top: 20px;
+}
+
+/* ============================================================================
+   LOADING STATE
+   ============================================================================ */
+
+.loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #4a5568;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-state h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #2d3748;
+}
+
+.loading-state p {
+    font-size: 1.1rem;
+    color: #718096;
+}
+
+/* ============================================================================
+   ERROR STATE
+   ============================================================================ */
+
+.error-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #4a5568;
+}
+
+.error-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.error-state h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #e53e3e;
+}
+
+.error-message {
+    font-size: 1.1rem;
+    color: #718096;
+    margin-bottom: 30px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.retry-btn, .home-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.retry-btn {
+    background: #667eea;
+    color: white;
+}
+
+.retry-btn:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+}
+
+.home-btn {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.home-btn:hover {
+    background: #cbd5e0;
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   LEADERBOARD HEADER
+   ============================================================================ */
+
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    padding-bottom: 25px;
+    border-bottom: 2px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-info {
+    flex: 1;
+    min-width: 250px;
+}
+
+.leaderboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 8px 0;
+}
+
+.leaderboard-subtitle {
+    font-size: 1.1rem;
+    color: #718096;
+    margin: 0 0 15px 0;
+}
+
+.leaderboard-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    font-size: 0.9rem;
+    color: #4a5568;
+    background: #f7fafc;
+    padding: 5px 12px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.refresh-btn {
+    padding: 10px 20px;
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   LEADERBOARD CONTROLS
+   ============================================================================ */
+
+.leaderboard-controls {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.control-select {
+    padding: 8px 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    color: #4a5568;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.control-select:hover {
+    border-color: #cbd5e0;
+}
+
+.control-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* ============================================================================
+   LEADERBOARD TABLE
+   ============================================================================ */
+
+.leaderboard-table-container {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.leaderboard-table th {
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.leaderboard-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #f7fafc;
+}
+
+.player-row {
+    transition: all 0.3s ease;
+}
+
+.player-row:hover {
+    background: #f7fafc;
+}
+
+/* Rank Column */
+.rank-column {
+    width: 80px;
+    text-align: center;
+}
+
+.rank-cell {
+    text-align: center;
+}
+
+.rank-display {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.rank-gold .rank-display {
+    color: #f6ad55;
+    text-shadow: 0 0 10px rgba(246, 173, 85, 0.5);
+}
+
+.rank-silver .rank-display {
+    color: #a0aec0;
+    text-shadow: 0 0 10px rgba(160, 174, 192, 0.5);
+}
+
+.rank-bronze .rank-display {
+    color: #dd6b20;
+    text-shadow: 0 0 10px rgba(221, 107, 32, 0.5);
+}
+
+.rank-normal .rank-display {
+    color: #4a5568;
+}
+
+/* Player Column */
+.player-column {
+    width: 200px;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.player-name {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1rem;
+}
+
+/* Score Column */
+.score-column {
+    width: 120px;
+}
+
+.score-value {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 1.1rem;
+}
+
+/* Games Column */
+.games-column {
+    width: 100px;
+    text-align: center;
+}
+
+.games-cell {
+    text-align: center;
+}
+
+.games-value {
+    color: #4a5568;
+    font-weight: 500;
+}
+
+/* Wins Column */
+.wins-column {
+    width: 100px;
+    text-align: center;
+}
+
+.wins-cell {
+    text-align: center;
+}
+
+.wins-value {
+    color: #48bb78;
+    font-weight: 600;
+}
+
+/* Win Rate Column */
+.winrate-column {
+    width: 150px;
+}
+
+.winrate-display {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.winrate-value {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.9rem;
+}
+
+.winrate-bar {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.winrate-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+/* Special row styling for top 3 */
+.rank-gold {
+    background: linear-gradient(90deg, rgba(246, 173, 85, 0.1) 0%, rgba(246, 173, 85, 0.05) 100%);
+}
+
+.rank-silver {
+    background: linear-gradient(90deg, rgba(160, 174, 192, 0.1) 0%, rgba(160, 174, 192, 0.05) 100%);
+}
+
+.rank-bronze {
+    background: linear-gradient(90deg, rgba(221, 107, 32, 0.1) 0%, rgba(221, 107, 32, 0.05) 100%);
+}
+
+/* ============================================================================
+   NO DATA MESSAGE
+   ============================================================================ */
+
+.no-data-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: #718096;
+}
+
+.no-data-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.no-data-message h3 {
+    font-size: 1.5rem;
+    color: #4a5568;
+    margin-bottom: 10px;
+}
+
+.no-data-message p {
+    font-size: 1rem;
+}
+
+/* ============================================================================
+   LEADERBOARD FOOTER
+   ============================================================================ */
+
+.leaderboard-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 25px;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.footer-info p {
+    margin: 0 0 5px 0;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.footer-note {
+    color: #718096;
+    font-size: 0.8rem;
+}
+
+.footer-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.action-btn.secondary {
+    background: #48bb78;
+    color: white;
+}
+
+.action-btn.secondary:hover {
+    background: #38a169;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+}
+
+.action-btn.tertiary {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.action-btn.tertiary:hover {
+    background: #cbd5e0;
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .leaderboard-container {
+        padding: 15px;
+    }
+    
+    .leaderboard-content {
+        padding: 20px;
+        margin-top: 10px;
+    }
+    
+    .leaderboard-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .leaderboard-title {
+        font-size: 2rem;
+    }
+    
+    .leaderboard-stats {
+        justify-content: center;
+    }
+    
+    .leaderboard-controls {
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .leaderboard-table-container {
+        overflow-x: auto;
+    }
+    
+    .leaderboard-table {
+        min-width: 600px;
+    }
+    
+    .leaderboard-footer {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .leaderboard-content {
+        padding: 15px;
+    }
+    
+    .leaderboard-title {
+        font-size: 1.8rem;
+    }
+    
+    .leaderboard-controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .control-group {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+    
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 10px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .footer-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .action-btn {
+        width: 100%;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .loading-spinner,
+    .player-row:hover,
+    .action-btn:hover,
+    .winrate-fill {
+        animation: none;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+.refresh-btn:focus,
+.action-btn:focus,
+.control-select:focus,
+.retry-btn:focus,
+.home-btn:focus {
+    outline: 3px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .leaderboard-table {
+        border: 2px solid #000;
+    }
+    
+    .leaderboard-table th {
+        border-bottom: 2px solid #000;
+    }
+    
+    .leaderboard-table td {
+        border-bottom: 1px solid #000;
+    }
+    
+    .winrate-bar {
+        border: 1px solid #000;
+    }
+}
