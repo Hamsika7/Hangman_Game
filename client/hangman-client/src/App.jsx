@@ -12,6 +12,10 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
+import Game from './components/Game';
+import Profile from './components/Profile';
+import Leaderboard from './components/Leaderboard';
+import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
 // Component to conditionally render navbar based on route
@@ -36,13 +40,21 @@ const AppContent = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        {/* Game Routes (to be implemented) */}
-        <Route path="/game" element={<div className="coming-soon">🎮 Game Page - Coming Soon!</div>} />
+        {/* Game Routes */}
+        <Route path="/game" element={
+          <ProtectedRoute>
+            <Game />
+          </ProtectedRoute>
+        } />
         <Route path="/demo" element={<div className="coming-soon">🎯 Demo Mode - Coming Soon!</div>} />
         
-        {/* Profile and Stats Routes (to be implemented) */}
-        <Route path="/profile" element={<div className="coming-soon">👤 Profile Page - Coming Soon!</div>} />
-        <Route path="/leaderboard" element={<div className="coming-soon">🏆 Leaderboard - Coming Soon!</div>} />
+        {/* Profile and Stats Routes */}
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/leaderboard" element={<Leaderboard />} />
         
         {/* Additional Routes */}
         <Route path="/forgot-password" element={<div className="coming-soon">🔐 Password Reset - Coming Soon!</div>} />
