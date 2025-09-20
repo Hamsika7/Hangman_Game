@@ -1,0 +1,554 @@
+/* ============================================================================
+   PROFILE COMPONENT STYLES - User Statistics and Profile Information
+   ============================================================================ */
+
+/* ============================================================================
+   PROFILE CONTAINER & LAYOUT
+   ============================================================================ */
+
+.profile-container {
+    min-height: calc(100vh - 70px); /* Account for navbar */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.profile-content {
+    max-width: 1200px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    margin-top: 20px;
+}
+
+/* ============================================================================
+   LOADING STATE
+   ============================================================================ */
+
+.loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #4a5568;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-state h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #2d3748;
+}
+
+.loading-state p {
+    font-size: 1.1rem;
+    color: #718096;
+}
+
+/* ============================================================================
+   ERROR STATE
+   ============================================================================ */
+
+.error-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #4a5568;
+}
+
+.error-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.error-state h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #e53e3e;
+}
+
+.error-message {
+    font-size: 1.1rem;
+    color: #718096;
+    margin-bottom: 30px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.retry-btn, .home-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.retry-btn {
+    background: #667eea;
+    color: white;
+}
+
+.retry-btn:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+}
+
+.home-btn {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.home-btn:hover {
+    background: #cbd5e0;
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   PROFILE HEADER
+   ============================================================================ */
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #e2e8f0;
+    flex-wrap: wrap;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.avatar-emoji {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.profile-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.profile-username {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 8px 0;
+}
+
+.profile-member-since {
+    font-size: 1rem;
+    color: #718096;
+    margin: 0 0 15px 0;
+}
+
+.performance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.performance-emoji {
+    font-size: 1.1rem;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.refresh-btn {
+    padding: 10px 20px;
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   STATISTICS GRID
+   ============================================================================ */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid #f7fafc;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    opacity: 0.8;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+    color: #2d3748;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #718096;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Stat Card Variants */
+.stat-card.primary {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.stat-card.primary .stat-value,
+.stat-card.primary .stat-label {
+    color: white;
+}
+
+.stat-card.success {
+    border-color: #48bb78;
+}
+
+.stat-card.success:hover {
+    border-color: #38a169;
+}
+
+.stat-card.danger {
+    border-color: #f56565;
+}
+
+.stat-card.danger:hover {
+    border-color: #e53e3e;
+}
+
+.stat-card.info {
+    border-color: #4299e1;
+}
+
+.stat-card.info:hover {
+    border-color: #3182ce;
+}
+
+.stat-card.warning {
+    border-color: #ed8936;
+}
+
+.stat-card.warning:hover {
+    border-color: #dd6b20;
+}
+
+.stat-card.special {
+    border-color: #9f7aea;
+    background: linear-gradient(135deg, #9f7aea 0%, #ed64a6 100%);
+    color: white;
+}
+
+.stat-card.special .stat-value,
+.stat-card.special .stat-label {
+    color: white;
+}
+
+/* ============================================================================
+   PERFORMANCE SUMMARY
+   ============================================================================ */
+
+.performance-summary {
+    background: #f7fafc;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+}
+
+.performance-summary h2 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin: 0 0 20px 0;
+    text-align: center;
+}
+
+.summary-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.summary-label {
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.summary-value {
+    font-weight: 700;
+    color: #2d3748;
+}
+
+/* ============================================================================
+   ACTION BUTTONS
+   ============================================================================ */
+
+.profile-actions-bottom {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.action-btn.secondary {
+    background: #48bb78;
+    color: white;
+}
+
+.action-btn.secondary:hover {
+    background: #38a169;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+}
+
+.action-btn.tertiary {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.action-btn.tertiary:hover {
+    background: #cbd5e0;
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 15px;
+    }
+    
+    .profile-content {
+        padding: 20px;
+        margin-top: 10px;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .profile-info {
+        min-width: auto;
+    }
+    
+    .profile-username {
+        font-size: 1.8rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .stat-card {
+        padding: 20px;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .summary-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-actions-bottom {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-content {
+        padding: 15px;
+    }
+    
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .avatar-emoji {
+        font-size: 2rem;
+    }
+    
+    .profile-username {
+        font-size: 1.5rem;
+    }
+    
+    .stat-card {
+        padding: 15px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .stat-icon {
+        font-size: 2rem;
+    }
+    
+    .stat-value {
+        font-size: 1.3rem;
+    }
+    
+    .performance-summary {
+        padding: 20px;
+    }
+    
+    .summary-item {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .loading-spinner,
+    .stat-card:hover,
+    .action-btn:hover {
+        animation: none;
+        transform: none;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+.refresh-btn:focus,
+.action-btn:focus,
+.retry-btn:focus,
+.home-btn:focus {
+    outline: 3px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .stat-card {
+        border-width: 3px;
+    }
+    
+    .performance-badge {
+        border: 2px solid white;
+    }
+}
