@@ -89,25 +89,42 @@ const Game = () => {
             
             console.log('✅ New game started:', response);
             
-            // Update component state with game data from API response
+            // CRITICAL: Update ALL component state ONLY with data from API response
+            // The backend is the single source of truth for all game state
             const gameData = response.data;
             
             // IMPORTANT: Save the game_id from API response for future guess requests
             // The server returns 'game_id' not 'id' in the response
             setGameId(gameData.game_id);
+            
+            // Update all game state directly from backend response
             setMaskedWord(gameData.masked_word);
             setGuessesLeft(gameData.attempts_left);
-            setGuessedLetters(new Set()); // Reset guessed letters
+            
+            // Initialize guessed letters from backend (should be empty array for new game)
+            setGuessedLetters(new Set(gameData.guessed_letters || []));
+            
+            // Set game status to active (new games are always active)
             setGameStatus('active');
+            
+            // Initialize score from backend (should be 0 for new game)
             setScore(gameData.score || 0);
+            
+            // Set initial message
             setMessage('New game started! Guess a letter to begin.');
+            
+            // Reset hint state
             setShowHint(false);
             setHintLetter('');
             
-            console.log('🎮 Game state updated:', {
+            // Reset actual word (only shown at game end)
+            setActualWord('');
+            
+            console.log('🎮 Game state updated from backend:', {
                 gameId: gameData.game_id,
                 maskedWord: gameData.masked_word,
-                attemptsLeft: gameData.attempts_left
+                attemptsLeft: gameData.attempts_left,
+                guessedLetters: gameData.guessed_letters || []
             });
             
         } catch (error) {
@@ -121,6 +138,12 @@ const Game = () => {
 
     /**
      * Handle user's letter guess with API integration
+     * 
+     * REFACTORED: This function now acts as a pure client for the backend API.
+     * All game logic, state validation, and calculations are performed on the backend.
+     * The frontend simply sends the guess and updates its state with the authoritative
+     * response from the backend, ensuring perfect synchronization.
+     * 
      * @param {string} letter - The guessed letter
      */
     const handleGuess = async (letter) => {
@@ -171,36 +194,61 @@ const Game = () => {
             
             console.log('✅ Guess processed:', response);
             
-            // Update component state with data from API response
+            // CRITICAL: Update ALL component state ONLY with data from API response
+            // The backend is the single source of truth for all game state
             const gameData = response.data;
             
-            // Update masked word display
+            console.log('🔄 Synchronizing frontend state with backend response:', {
+                maskedWord: gameData.masked_word,
+                attemptsLeft: gameData.attempts_left,
+                guessedLetters: gameData.guessed_letters,
+                gameStatus: gameData.game_status,
+                guessResult: gameData.guess_result,
+                score: gameData.score
+            });
+            
+            // Update masked word display - directly from backend
             setMaskedWord(gameData.masked_word);
             
-            // Update remaining attempts
+            // Update remaining attempts - directly from backend
             setGuessesLeft(gameData.attempts_left);
             
-            // Add letter to guessed letters set
-            setGuessedLetters(prev => new Set([...prev, letter]));
+            // Update guessed letters - use backend's complete guessed_letters array
+            // Convert backend array to Set for frontend consistency
+            setGuessedLetters(new Set(gameData.guessed_letters || []));
             
-            // Update game status and score
-            setGameStatus(gameData.status);
-            setScore(gameData.score || 0);
+            // Update game status - directly from backend
+            setGameStatus(gameData.game_status);
             
-            // Handle different game outcomes
-            if (gameData.status === 'won') {
+            // Update score - directly from backend (only available for completed games)
+            if (gameData.score !== undefined) {
+                setScore(gameData.score);
+            }
+            
+            // Update actual word - only available for completed games
+            if (gameData.word) {
                 setActualWord(gameData.word);
-                setMessage(`🎉 Congratulations! You won! The word was "${gameData.word.toUpperCase()}". Score: ${gameData.score}`);
-            } else if (gameData.status === 'lost') {
-                setActualWord(gameData.word);
-                setMessage(`💀 Game over! The word was "${gameData.word.toUpperCase()}". Better luck next time!`);
+            }
+            
+            // Update message - use backend's message as the primary source
+            // Backend provides authoritative feedback about the guess result
+            if (response.message) {
+                // Use the backend's message which includes guess result feedback
+                setMessage(response.message);
             } else {
-                // Game still active - provide feedback on the guess
-                const isCorrect = gameData.correct_guess;
-                if (isCorrect) {
-                    setMessage(`✅ Great guess! '${letter.toUpperCase()}' is in the word.`);
+                // Fallback message construction for completed games
+                if (gameData.game_status === 'won') {
+                    setMessage(`🎉 Congratulations! You won! The word was "${gameData.word?.toUpperCase()}". Score: ${gameData.score}`);
+                } else if (gameData.game_status === 'lost') {
+                    setMessage(`💀 Game over! The word was "${gameData.word?.toUpperCase()}". Better luck next time!`);
                 } else {
-                    setMessage(`❌ Sorry, '${letter.toUpperCase()}' is not in the word. ${gameData.attempts_left} guesses left.`);
+                    // For active games, provide basic feedback
+                    const guessResult = gameData.guess_result;
+                    if (guessResult === 'correct') {
+                        setMessage(`✅ Great guess! '${letter.toUpperCase()}' is in the word.`);
+                    } else if (guessResult === 'incorrect') {
+                        setMessage(`❌ Sorry, '${letter.toUpperCase()}' is not in the word. ${gameData.attempts_left} guesses left.`);
+                    }
                 }
             }
             
