@@ -148,8 +148,8 @@ app.get('/api', (req, res) => {
                 health: 'GET /api/game/prolog-health - Check Prolog bridge (requires auth)'
             },
             users: {
-                stats: 'GET /api/users/stats (coming soon)',
-                leaderboard: 'GET /api/users/leaderboard (coming soon)'
+                stats: 'GET /api/users/stats - Get user statistics (requires auth)',
+                leaderboard: 'GET /api/users/leaderboard - Get top players leaderboard (public)'
             }
         },
         authentication: {
@@ -927,13 +927,199 @@ app.get('/api/game/prolog-health', authenticateToken, async (req, res) => {
     }
 });
 
-// User routes (placeholder)
-app.use('/api/users', (req, res, next) => {
-    res.status(501).json({
-        error: 'User endpoints not yet implemented',
-        message: 'Coming in the next development phase',
-        requested: `${req.method} ${req.path}`
-    });
+// ============================================================================
+// USER STATISTICS AND LEADERBOARD ENDPOINTS
+// ============================================================================
+
+/**
+ * GET /api/users/stats
+ * Get current user's game statistics
+ * 
+ * Protected Route: Requires valid JWT token
+ * 
+ * Response:
+ * {
+ *   "status": "success",
+ *   "data": {
+ *     "user_id": 1,
+ *     "username": "player1",
+ *     "total_score": 1250,
+ *     "games_played": 15,
+ *     "games_won": 10,
+ *     "games_lost": 5,
+ *     "win_percentage": 66.67,
+ *     "average_score": 83.33,
+ *     "best_game_score": 150,
+ *     "member_since": "2025-01-20T12:00:00Z"
+ *   }
+ * }
+ */
+app.get('/api/users/stats', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        console.log(`📊 Getting stats for user: ${req.user.username} (ID: ${userId})`);
+        
+        // Get user basic information and overall stats from users table
+        const userStats = await getQuery(
+            `SELECT 
+                id, username, score as total_score, 
+                games_played, games_won, games_lost, 
+                created_at as member_since
+            FROM users 
+            WHERE id = ?`,
+            [userId]
+        );
+        
+        if (!userStats) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'User not found'
+            });
+        }
+        
+        // Get additional game statistics from games table
+        const gameStats = await getQuery(
+            `SELECT 
+                COUNT(*) as total_games,
+                AVG(score) as average_score,
+                MAX(score) as best_game_score,
+                COUNT(CASE WHEN status = 'won' THEN 1 END) as won_games,
+                COUNT(CASE WHEN status = 'lost' THEN 1 END) as lost_games
+            FROM games 
+            WHERE user_id = ?`,
+            [userId]
+        );
+        
+        // Calculate win percentage
+        const winPercentage = userStats.games_played > 0 ? 
+            Math.round((userStats.games_won / userStats.games_played) * 100 * 100) / 100 : 0;
+        
+        // Prepare response data
+        const statsData = {
+            user_id: userStats.id,
+            username: userStats.username,
+            total_score: userStats.total_score || 0,
+            games_played: userStats.games_played || 0,
+            games_won: userStats.games_won || 0,
+            games_lost: userStats.games_lost || 0,
+            win_percentage: winPercentage,
+            average_score: gameStats ? Math.round((gameStats.average_score || 0) * 100) / 100 : 0,
+            best_game_score: gameStats ? (gameStats.best_game_score || 0) : 0,
+            member_since: userStats.member_since
+        };
+        
+        console.log('✅ User stats retrieved:', statsData);
+        
+        res.json({
+            status: 'success',
+            data: statsData
+        });
+        
+    } catch (error) {
+        console.error('❌ Error fetching user stats:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to retrieve user statistics',
+            details: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/users/leaderboard
+ * Get top players leaderboard (public endpoint)
+ * 
+ * Query Parameters:
+ * - limit: Number of top players to return (default: 10, max: 50)
+ * - sort: Sort criteria - 'score' or 'wins' (default: 'score')
+ * 
+ * Response:
+ * {
+ *   "status": "success",
+ *   "data": {
+ *     "leaderboard": [
+ *       {
+ *         "rank": 1,
+ *         "username": "player1",
+ *         "total_score": 2500,
+ *         "games_played": 25,
+ *         "games_won": 20,
+ *         "win_percentage": 80.0
+ *       }
+ *     ],
+ *     "total_players": 150,
+ *     "last_updated": "2025-01-20T12:00:00Z"
+ *   }
+ * }
+ */
+app.get('/api/users/leaderboard', async (req, res) => {
+    try {
+        // Parse query parameters with validation
+        const limit = Math.min(parseInt(req.query.limit) || 10, 50); // Max 50 players
+        const sortBy = req.query.sort === 'wins' ? 'games_won' : 'score'; // Default to score
+        
+        console.log(`🏆 Getting leaderboard - limit: ${limit}, sort: ${sortBy}`);
+        
+        // Get total number of players for metadata
+        const totalPlayersResult = await getQuery(
+            'SELECT COUNT(*) as total FROM users WHERE games_played > 0'
+        );
+        const totalPlayers = totalPlayersResult ? totalPlayersResult.total : 0;
+        
+        // Query top players with prepared statement to prevent SQL injection
+        const leaderboardQuery = `
+            SELECT 
+                username,
+                score as total_score,
+                games_played,
+                games_won,
+                games_lost,
+                CASE 
+                    WHEN games_played > 0 
+                    THEN ROUND((CAST(games_won AS FLOAT) / games_played) * 100, 2)
+                    ELSE 0 
+                END as win_percentage,
+                updated_at
+            FROM users 
+            WHERE games_played > 0 
+            ORDER BY ${sortBy} DESC, games_won DESC, username ASC
+            LIMIT ?
+        `;
+        
+        const leaderboardData = await allQuery(leaderboardQuery, [limit]);
+        
+        // Add rank to each player
+        const rankedLeaderboard = leaderboardData.map((player, index) => ({
+            rank: index + 1,
+            username: player.username,
+            total_score: player.total_score || 0,
+            games_played: player.games_played || 0,
+            games_won: player.games_won || 0,
+            games_lost: player.games_lost || 0,
+            win_percentage: player.win_percentage || 0
+        }));
+        
+        console.log(`✅ Leaderboard retrieved: ${rankedLeaderboard.length} players`);
+        
+        res.json({
+            status: 'success',
+            data: {
+                leaderboard: rankedLeaderboard,
+                total_players: totalPlayers,
+                sort_criteria: sortBy,
+                limit_applied: limit,
+                last_updated: new Date().toISOString()
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Error fetching leaderboard:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to retrieve leaderboard',
+            details: error.message
+        });
+    }
 });
 
 // ============================================================================
