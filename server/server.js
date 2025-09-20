@@ -19,7 +19,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 // Import database module
-const { initializeDatabase, runQuery, getQuery } = require('./db/database');
+const { initializeDatabase, runQuery, getQuery, allQuery } = require('./db/database');
 
 // Import Prolog bridge for game logic
 const {
@@ -1060,38 +1060,86 @@ app.get('/api/users/leaderboard', async (req, res) => {
         
         console.log(`🏆 Getting leaderboard - limit: ${limit}, sort: ${sortBy}`);
         
+        // Validate sortBy parameter to prevent SQL injection
+        const validSortColumns = ['score', 'games_won'];
+        if (!validSortColumns.includes(sortBy)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid sort parameter. Must be "score" or "games_won"'
+            });
+        }
+        
         // Get total number of players for metadata
         const totalPlayersResult = await getQuery(
             'SELECT COUNT(*) as total FROM users WHERE games_played > 0'
         );
         const totalPlayers = totalPlayersResult ? totalPlayersResult.total : 0;
         
-        // Query top players with prepared statement to prevent SQL injection
-        const leaderboardQuery = `
-            SELECT 
-                username,
-                score as total_score,
-                games_played,
-                games_won,
-                games_lost,
-                CASE 
-                    WHEN games_played > 0 
-                    THEN ROUND((CAST(games_won AS FLOAT) / games_played) * 100, 2)
-                    ELSE 0 
-                END as win_percentage,
-                updated_at
-            FROM users 
-            WHERE games_played > 0 
-            ORDER BY ${sortBy} DESC, games_won DESC, username ASC
-            LIMIT ?
-        `;
+        // FIXED: Create separate queries for each sort option to avoid SQL injection
+        // This ensures we use proper parameterized queries throughout
+        let leaderboardQuery;
+        if (sortBy === 'games_won') {
+            leaderboardQuery = `
+                SELECT 
+                    username,
+                    score as total_score,
+                    games_played,
+                    games_won,
+                    games_lost,
+                    CASE 
+                        WHEN games_played > 0 
+                        THEN ROUND((CAST(games_won AS FLOAT) / games_played) * 100, 2)
+                        ELSE 0 
+                    END as win_percentage,
+                    updated_at
+                FROM users 
+                WHERE games_played > 0 
+                ORDER BY games_won DESC, score DESC, username ASC
+                LIMIT ?
+            `;
+        } else {
+            // Default: sort by score
+            leaderboardQuery = `
+                SELECT 
+                    username,
+                    score as total_score,
+                    games_played,
+                    games_won,
+                    games_lost,
+                    CASE 
+                        WHEN games_played > 0 
+                        THEN ROUND((CAST(games_won AS FLOAT) / games_played) * 100, 2)
+                        ELSE 0 
+                    END as win_percentage,
+                    updated_at
+                FROM users 
+                WHERE games_played > 0 
+                ORDER BY score DESC, games_won DESC, username ASC
+                LIMIT ?
+            `;
+        }
         
-        const leaderboardData = await allQuery(leaderboardQuery, [limit]);
+        // FIXED: Use database connection directly to ensure compatibility
+        // Execute the query with proper error handling
+        const leaderboardData = await new Promise((resolve, reject) => {
+            const { db } = require('./db/database');
+            db.all(leaderboardQuery, [limit], (err, rows) => {
+                if (err) {
+                    console.error('❌ Database query error:', err.message);
+                    console.error('❌ SQL Query:', leaderboardQuery);
+                    console.error('❌ Parameters:', [limit]);
+                    reject(err);
+                } else {
+                    console.log(`✅ Query executed successfully, found ${rows?.length || 0} rows`);
+                    resolve(rows || []);
+                }
+            });
+        });
         
-        // Add rank to each player
+        // Add rank to each player and ensure all fields are properly handled
         const rankedLeaderboard = leaderboardData.map((player, index) => ({
             rank: index + 1,
-            username: player.username,
+            username: player.username || 'Unknown',
             total_score: player.total_score || 0,
             games_played: player.games_played || 0,
             games_won: player.games_won || 0,
@@ -1114,10 +1162,11 @@ app.get('/api/users/leaderboard', async (req, res) => {
         
     } catch (error) {
         console.error('❌ Error fetching leaderboard:', error.message);
+        console.error('❌ Full error stack:', error.stack);
         res.status(500).json({
             status: 'error',
             message: 'Failed to retrieve leaderboard',
-            details: error.message
+            details: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
         });
     }
 });
