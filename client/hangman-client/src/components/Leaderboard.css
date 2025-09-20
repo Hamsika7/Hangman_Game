@@ -1,29 +1,126 @@
 /* ============================================================================
    LEADERBOARD COMPONENT STYLES - Top Players Ranking and Statistics
+   ============================================================================
+   
+   Modern leaderboard featuring:
+   - Podium-style top 3 display
+   - Interactive ranking cards
+   - Real-time statistics
+   - Trophy and medal system
+   - Responsive design for all devices
    ============================================================================ */
 
 /* ============================================================================
    LEADERBOARD CONTAINER & LAYOUT
    ============================================================================ */
 
+/* ============================================================================
+   FULL-SCREEN LEADERBOARD CONTAINER
+   ============================================================================
+   
+   Updated for full-screen layout:
+   - Utilizes full viewport width and height
+   - Ensures background fills entire screen
+   - Maintains proper content spacing
+   - Responsive padding for all screen sizes
+   ============================================================================ */
+
 .leaderboard-container {
-    min-height: calc(100vh - 70px); /* Account for navbar */
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 20px;
+    /* Full viewport height minus navbar */
+    min-height: calc(100vh - 70px);
+    height: calc(100vh - 70px);
+    
+    /* Full viewport width utilization */
+    width: 100vw;
+    
+    /* Full-screen background gradient */
+    background: var(--gradient-background);
+    
+    /* Responsive padding to prevent edge-touching content */
+    padding: var(--space-4) var(--space-6);
+    
+    /* Flex layout for content positioning */
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    
+    /* Positioning and overflow control */
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto; /* Allow vertical scrolling for long leaderboards */
 }
 
+/* Animated background elements */
+.leaderboard-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 30% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+    animation: backgroundShift 20s ease-in-out infinite;
+    z-index: 0;
+}
+
+/* ============================================================================
+   FULL-SCREEN LEADERBOARD CONTENT
+   ============================================================================
+   
+   Updated for full-screen layout:
+   - Removed max-width constraint for full-screen utilization
+   - Added responsive width management
+   - Maintains glass morphism design
+   - Ensures leaderboard scales properly across all screen sizes
+   ============================================================================ */
+
 .leaderboard-content {
-    max-width: 1200px;
+    /* Full width utilization with intelligent constraints */
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    margin-top: 20px;
+    max-width: none; /* Remove width constraint for full-screen */
+    
+    /* Glass morphism background */
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-2xl);
+    
+    /* Responsive padding for full-screen layout */
+    padding: var(--space-8) var(--space-10);
+    
+    /* Enhanced shadow for full-screen presence */
+    box-shadow: var(--shadow-2xl);
+    
+    /* Spacing and positioning */
+    margin-top: var(--space-4);
+    position: relative;
+    z-index: 1;
+    
+    /* Smooth entrance animation */
+    animation: slideUp 0.8s ease-out;
+}
+
+/* Responsive adjustments for leaderboard content */
+@media (max-width: 1200px) {
+    .leaderboard-content {
+        padding: var(--space-6) var(--space-8);
+    }
+}
+
+@media (max-width: 768px) {
+    .leaderboard-content {
+        padding: var(--space-4) var(--space-6);
+        margin-top: var(--space-2);
+    }
+}
+
+@media (max-width: 480px) {
+    .leaderboard-content {
+        padding: var(--space-3) var(--space-4);
+        margin-top: var(--space-1);
+    }
 }
 
 /* ============================================================================

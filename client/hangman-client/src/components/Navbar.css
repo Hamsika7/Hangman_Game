@@ -7,18 +7,25 @@
    ============================================================================ */
 
 .navbar {
-    background: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-lg);
     position: sticky;
     top: 0;
-    z-index: 1000;
-    border-bottom: 1px solid #e2e8f0;
+    z-index: var(--z-sticky);
+    border-bottom: 1px solid var(--color-border);
+    transition: all var(--transition-normal);
+}
+
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: var(--shadow-xl);
 }
 
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 var(--space-6);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -33,23 +40,36 @@
     display: flex;
     align-items: center;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: #2d3748;
-    gap: 10px;
-    transition: color 0.3s ease;
+    font-weight: var(--font-bold);
+    font-size: var(--text-xl);
+    font-family: var(--font-family-display);
+    color: var(--color-text-primary);
+    gap: var(--space-3);
+    transition: all var(--transition-normal);
+    position: relative;
 }
 
 .nav-brand:hover {
-    color: #667eea;
+    color: var(--color-primary);
+    transform: translateY(-1px);
 }
 
 .brand-icon {
-    font-size: 1.5rem;
+    font-size: var(--text-2xl);
+    animation: brandPulse 3s ease-in-out infinite;
+}
+
+@keyframes brandPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
 
 .brand-text {
-    font-weight: 700;
+    font-weight: var(--font-bold);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* ============================================================================
@@ -100,82 +120,288 @@
 }
 
 /* ============================================================================
-   USER SECTION
+   USER SECTION - ENHANCED ALIGNMENT FIX
+   ============================================================================
+   
+   This section provides perfect alignment for the header user info:
+   - Uses Flexbox for consistent horizontal and vertical alignment
+   - Ensures proper spacing between all elements
+   - Maintains alignment across all screen sizes
    ============================================================================ */
 
 .nav-user {
+    /* Primary Flexbox container for user section */
     display: flex;
-    align-items: center;
-    gap: 15px;
+    align-items: center; /* Vertically center all child elements */
+    justify-content: flex-end; /* Align content to the right */
+    gap: var(--space-4); /* 16px consistent spacing */
+    
+    /* Ensure minimum height for consistent alignment */
+    min-height: 50px;
+    
+    /* Prevent content from wrapping */
+    flex-wrap: nowrap;
 }
 
-/* Authenticated User Section */
+/* ============================================================================
+   ENHANCED USER SECTION WITH IMPROVED ALIGNMENT
+   ============================================================================
+   
+   Fixed alignment issues using Flexbox:
+   - Proper vertical centering of all elements
+   - Consistent spacing between username and score
+   - Responsive design for different screen sizes
+   - Visual hierarchy with proper typography
+   ============================================================================ */
+
+/* ============================================================================
+   AUTHENTICATED USER SECTION - PRECISE ALIGNMENT
+   ============================================================================ */
+
 .user-section {
+    /* Flexbox container for user info and logout button */
     display: flex;
-    align-items: center;
-    gap: 15px;
+    align-items: center; /* Perfect vertical alignment */
+    justify-content: center; /* Center content horizontally */
+    gap: var(--space-4); /* 16px spacing between user-info and logout button */
+    
+    /* Ensure consistent baseline */
+    height: 50px; /* Fixed height for perfect alignment */
+    
+    /* Prevent flex items from growing/shrinking unexpectedly */
+    flex-shrink: 0;
 }
 
 .user-info {
+    /* ===== CRITICAL FLEXBOX ALIGNMENT PROPERTIES ===== */
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: #f7fafc;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
+    align-items: center; /* Vertically center avatar, username, and score */
+    justify-content: flex-start; /* Align content to the left within container */
+    gap: var(--space-3); /* 12px consistent gap between all child elements */
+    
+    /* ===== CONTAINER SIZING FOR PERFECT ALIGNMENT ===== */
+    height: 44px; /* Fixed height ensures all elements align to same baseline */
+    padding: 0 var(--space-4); /* Horizontal padding only to maintain height */
+    
+    /* ===== CRITICAL ALIGNMENT FIX ===== */
+    align-items: center !important; /* Force perfect vertical centering */
+    box-sizing: border-box; /* Include padding in height calculation */
+    
+    /* ===== VISUAL STYLING ===== */
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    
+    /* ===== FLEX BEHAVIOR ===== */
+    flex-shrink: 0; /* Prevent container from shrinking */
+    white-space: nowrap; /* Prevent text wrapping that could break alignment */
+    
+    /* ===== SMOOTH INTERACTIONS ===== */
+    transition: all var(--transition-normal);
 }
 
+.user-info:hover {
+    background: var(--color-surface-hover);
+    border-color: var(--color-border-hover);
+    box-shadow: var(--shadow-md);
+}
+
+/* ============================================================================
+   INDIVIDUAL ELEMENT ALIGNMENT - CRITICAL FIX
+   ============================================================================ */
+
 .user-avatar {
-    font-size: 1.2rem;
+    /* ===== PERFECT CENTERING WITH FLEXBOX ===== */
+    display: flex !important;
+    align-items: center !important; /* Force vertical centering of the emoji */
+    justify-content: center !important; /* Force horizontal centering of the emoji */
+    
+    /* ===== EXACT DIMENSIONS FOR PERFECT ALIGNMENT ===== */
+    width: 32px !important;
+    height: 32px !important;
+    
+    /* ===== TYPOGRAPHY FOR PERFECT ALIGNMENT ===== */
+    font-size: var(--text-lg);
+    line-height: 1 !important; /* Critical: Remove ALL extra line spacing */
+    
+    /* ===== VISUAL STYLING ===== */
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    color: var(--color-text-inverse);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+    
+    /* ===== FLEX BEHAVIOR ===== */
+    flex-shrink: 0; /* Prevent avatar from shrinking */
+    
+    /* ===== ALIGNMENT OVERRIDE ===== */
+    margin: 0 !important; /* Remove any default margins */
+    padding: 0 !important; /* Remove any default padding */
+    vertical-align: middle; /* Additional alignment insurance */
 }
 
 .user-name {
-    font-weight: 600;
-    color: #2d3748;
-    font-size: 0.95rem;
+    /* ===== CRITICAL FLEXBOX ALIGNMENT TO MATCH AVATAR AND SCORE ===== */
+    display: flex !important;
+    align-items: center !important; /* Force vertical centering to match avatar */
+    justify-content: flex-start; /* Align text to the left */
+    
+    /* ===== EXACT HEIGHT TO MATCH OTHER ELEMENTS ===== */
+    height: 32px !important; /* Match avatar and score height exactly */
+    
+    /* ===== TYPOGRAPHY FOR PERFECT ALIGNMENT ===== */
+    font-family: var(--font-family-primary);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-base);
+    color: var(--color-text-primary);
+    line-height: 1 !important; /* Critical: Remove ALL extra line height */
+    
+    /* ===== CONTENT MANAGEMENT ===== */
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ... for long usernames */
+    max-width: 100px; /* Limit width to prevent layout breaking */
+    
+    /* ===== ALIGNMENT OVERRIDE ===== */
+    margin: 0 !important; /* Remove any default margins */
+    padding: 0 !important; /* Remove any default padding */
+    vertical-align: middle; /* Additional alignment insurance */
+    
+    /* ===== FLEX BEHAVIOR ===== */
+    flex-shrink: 1; /* Allow username to shrink if needed */
 }
 
 .user-score {
-    font-size: 0.85rem;
-    color: #667eea;
-    font-weight: 500;
-    background: rgba(102, 126, 234, 0.1);
-    padding: 2px 8px;
-    border-radius: 6px;
+    /* ===== CRITICAL FLEXBOX ALIGNMENT FOR PERFECT MATCH WITH AVATAR ===== */
+    display: flex !important;
+    align-items: center !important; /* Force vertical centering to match avatar */
+    justify-content: center !important; /* Force horizontal centering */
+    
+    /* ===== EXACT DIMENSIONS TO MATCH AVATAR ALIGNMENT ===== */
+    height: 32px !important; /* Match avatar height exactly */
+    padding: 0 var(--space-3); /* Horizontal padding only */
+    
+    /* ===== TYPOGRAPHY FOR PERFECT ALIGNMENT ===== */
+    font-family: var(--font-family-primary);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--primary-700);
+    line-height: 1 !important; /* Critical: Remove ALL extra line height */
+    
+    /* ===== BADGE STYLING ===== */
+    background: var(--primary-100);
+    border: 1px solid var(--primary-200);
+    border-radius: var(--radius-full);
+    
+    /* ===== CONTENT MANAGEMENT ===== */
+    white-space: nowrap; /* Prevent text wrapping */
+    
+    /* ===== FLEX BEHAVIOR ===== */
+    flex-shrink: 0; /* Prevent score badge from shrinking */
+    
+    /* ===== ALIGNMENT OVERRIDE ===== */
+    margin: 0 !important; /* Remove any default margins */
+    vertical-align: middle; /* Additional alignment insurance */
+    
+    /* ===== VISUAL ENHANCEMENTS ===== */
+    box-shadow: 0 1px 3px rgba(99, 102, 241, 0.1);
+    transition: all var(--transition-normal);
 }
 
+.user-score:hover {
+    background: var(--primary-200);
+    border-color: var(--primary-300);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.15);
+}
+
+/* ============================================================================
+   LOGOUT BUTTON - PERFECT ALIGNMENT WITH USER INFO
+   ============================================================================ */
+
 .logout-button {
+    /* ===== CRITICAL FLEXBOX ALIGNMENT ===== */
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #fed7d7;
-    color: #742a2a;
-    border: 1px solid #feb2b2;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+    gap: var(--space-2); /* 8px gap between text and icon */
+    
+    /* ===== EXACT HEIGHT MATCHING ===== */
+    height: 44px; /* Exact match with user-info container */
+    padding: 0 var(--space-4); /* Horizontal padding only to maintain height */
+    
+    /* ===== TYPOGRAPHY FOR ALIGNMENT ===== */
+    font-family: var(--font-family-primary);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    line-height: 1; /* Critical: Remove extra line height */
+    
+    /* ===== VISUAL STYLING ===== */
+    background: var(--error-100);
+    color: var(--error-700);
+    border: 1px solid var(--error-200);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    
+    /* ===== FLEX BEHAVIOR ===== */
+    flex-shrink: 0; /* Prevent button from shrinking */
+    white-space: nowrap; /* Prevent text wrapping */
+    
+    /* ===== INTERACTIVE PROPERTIES ===== */
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer effect for logout button */
+.logout-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.logout-button:hover:not(:disabled)::before {
+    left: 100%;
 }
 
 .logout-button:hover:not(:disabled) {
-    background: #fbb6ce;
-    transform: translateY(-1px);
+    background: var(--error-200);
+    border-color: var(--error-300);
+    color: var(--error-800);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.logout-button:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .logout-button:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
 }
 
 .logout-button.loading {
     pointer-events: none;
+    background: var(--neutral-200);
+    color: var(--neutral-600);
+    border-color: var(--neutral-300);
 }
 
 .logout-icon {
-    font-size: 1rem;
+    font-size: var(--text-base);
+    transition: transform var(--transition-normal);
+}
+
+.logout-button:hover:not(:disabled) .logout-icon {
+    transform: translateX(2px);
 }
 
 /* Guest User Section */
@@ -284,79 +510,114 @@
 }
 
 /* ============================================================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN WITH ENHANCED ALIGNMENT
+   ============================================================================
+   
+   Mobile-first responsive design ensuring proper alignment across all devices:
+   - Maintains Flexbox alignment on all screen sizes
+   - Optimizes spacing and sizing for mobile devices
+   - Ensures user info remains properly aligned
    ============================================================================ */
 
 @media (max-width: 768px) {
     .nav-container {
-        padding: 0 15px;
-        height: 60px;
-    }
-    
-    .mobile-toggle {
-        display: flex;
+        padding: 0 var(--space-4);
     }
     
     .nav-menu {
         position: fixed;
-        top: 60px;
+        top: 70px;
         left: -100%;
-        width: 280px;
-        height: calc(100vh - 60px);
-        background: white;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: var(--color-surface);
         flex-direction: column;
-        align-items: flex-start;
-        padding: 30px 20px;
-        gap: 20px;
-        transition: left 0.3s ease;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: var(--space-12);
+        transition: left var(--transition-normal);
+        box-shadow: var(--shadow-xl);
+        z-index: 999;
+        backdrop-filter: blur(20px);
     }
     
     .nav-menu.active {
         left: 0;
     }
     
-    .mobile-overlay {
-        display: block;
-    }
-    
     .nav-link {
-        width: 100%;
-        padding: 12px 16px;
-        border-radius: 8px;
+        font-size: var(--text-lg);
+        padding: var(--space-4) var(--space-5);
+        width: 200px;
+        text-align: center;
+        margin-bottom: var(--space-3);
+        border-radius: var(--radius-xl);
     }
     
+    .mobile-toggle {
+        display: flex;
+    }
+    
+    /* Enhanced mobile user section alignment */
     .nav-user {
-        gap: 10px;
+        gap: var(--space-2);
+    }
+    
+    .user-section {
+        gap: var(--space-2);
     }
     
     .user-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-        padding: 10px;
+        /* Maintain Flexbox alignment on mobile */
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        
+        /* Optimized mobile sizing */
+        padding: var(--space-2) var(--space-3);
+        min-height: 36px; /* Smaller but consistent height */
+        
+        /* Responsive typography */
+        font-size: var(--text-sm);
+    }
+    
+    .user-avatar {
+        /* Smaller avatar for mobile */
+        width: 24px;
+        height: 24px;
+        font-size: var(--text-base);
+    }
+    
+    .user-name {
+        font-size: var(--text-sm);
+        max-width: 80px; /* Shorter max-width for mobile */
     }
     
     .user-score {
-        align-self: flex-start;
+        font-size: var(--text-xs);
+        padding: var(--space-1) var(--space-2);
+        min-height: 20px; /* Smaller but consistent */
     }
     
-    .guest-section {
-        flex-direction: column;
-        gap: 8px;
+    .logout-button {
+        /* Maintain alignment with user-info */
+        min-height: 36px;
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-xs);
+        gap: var(--space-1);
     }
     
     .nav-button {
-        padding: 8px 16px;
-        font-size: 0.9rem;
-        width: 100px;
-        text-align: center;
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-sm);
+        min-height: 36px;
     }
 }
 
+/* Extra small devices */
 @media (max-width: 480px) {
     .nav-container {
+        padding: 0 var(--space-3);
         padding: 0 10px;
     }
     

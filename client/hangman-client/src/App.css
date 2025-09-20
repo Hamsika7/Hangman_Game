@@ -2,27 +2,44 @@
    GLOBAL APP STYLES - Hangman Game Application
    ============================================================================ */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Import our global design system */
+@import './styles/globals.css';
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 
-               'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 
-               'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f7fafc;
-  color: #2d3748;
-  line-height: 1.6;
-}
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ============================================================================
+   FULL-SCREEN APP LAYOUT
+   ============================================================================
+   
+   Changes made for full-screen layout:
+   - Removed fixed max-width constraints
+   - Added full viewport width utilization
+   - Ensured background fills entire screen
+   - Maintained proper content spacing with padding
+   ============================================================================ */
 
 .app {
+  /* Full viewport height to eliminate vertical gaps */
   min-height: 100vh;
+  height: 100vh;
+  
+  /* Full viewport width to eliminate horizontal gaps */
+  width: 100vw;
+  
+  /* Flex layout for proper content distribution */
   display: flex;
   flex-direction: column;
+  
+  /* Ensure background fills entire viewport */
+  background: var(--color-background);
+  
+  /* Remove any default margins/padding that could create gaps */
+  margin: 0;
+  padding: 0;
+  
+  /* Prevent horizontal scrollbar on smaller screens */
+  overflow-x: hidden;
 }
 
 /* ============================================================================
@@ -34,12 +51,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-size: 2rem;
-  font-weight: 600;
+  background: var(--gradient-primary);
+  color: var(--color-text-inverse);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-semibold);
   text-align: center;
-  padding: 20px;
+  padding: var(--space-8);
+  font-family: var(--font-family-display);
 }
 
 .coming-soon::before {
@@ -98,10 +116,40 @@ body {
    UTILITY CLASSES
    ============================================================================ */
 
+/* ============================================================================
+   FULL-SCREEN CONTAINER UTILITY
+   ============================================================================
+   
+   Updated container for full-screen layout:
+   - Removed max-width constraint to allow full-screen utilization
+   - Added responsive padding to prevent content from touching edges
+   - Maintains readability with proper content spacing
+   ============================================================================ */
+
 .container {
-  max-width: 1200px;
+  /* Full width utilization instead of fixed max-width */
+  width: 100%;
+  
+  /* Center content horizontally */
   margin: 0 auto;
-  padding: 0 20px;
+  
+  /* Responsive padding to prevent edge-touching content */
+  padding: 0 var(--space-6); /* 24px on larger screens */
+}
+
+/* Full-width container variant for components that need edge-to-edge layout */
+.container-full {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Content-constrained container for better readability on very wide screens */
+.container-constrained {
+  width: 100%;
+  max-width: 1400px; /* Slightly wider than before for better full-screen utilization */
+  margin: 0 auto;
+  padding: 0 var(--space-6);
 }
 
 .text-center {
@@ -121,34 +169,80 @@ body {
 .mt-5 { margin-top: 3rem; }
 
 /* ============================================================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN FOR FULL-SCREEN LAYOUT
+   ============================================================================
+   
+   Enhanced responsive design for full-screen experience:
+   - Adjusts container padding for different screen sizes
+   - Maintains proper spacing on mobile devices
+   - Ensures content doesn't touch screen edges
    ============================================================================ */
 
+/* Tablet adjustments */
 @media (max-width: 768px) {
+  .app {
+    /* Maintain full-screen on tablets */
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  .container {
+    padding: 0 var(--space-4); /* Reduce padding on tablets */
+  }
+  
+  .container-constrained {
+    padding: 0 var(--space-4);
+  }
+  
   .coming-soon {
-    font-size: 1.5rem;
-    padding: 40px 20px;
+    font-size: var(--text-2xl);
+    padding: var(--space-10) var(--space-5);
   }
   
   .not-found h1 {
-    font-size: 3rem;
+    font-size: var(--text-5xl);
   }
   
   .not-found p {
-    font-size: 1.2rem;
+    font-size: var(--text-xl);
   }
 }
 
+/* Mobile adjustments */
 @media (max-width: 480px) {
+  .app {
+    /* Ensure full-screen on mobile */
+    width: 100vw;
+    height: 100vh;
+    /* Prevent zoom issues on mobile */
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  .container {
+    padding: 0 var(--space-3); /* Minimal padding on mobile */
+  }
+  
+  .container-constrained {
+    padding: 0 var(--space-3);
+  }
+  
   .coming-soon {
-    font-size: 1.2rem;
+    font-size: var(--text-xl);
+    padding: var(--space-8) var(--space-4);
   }
   
   .not-found h1 {
-    font-size: 2.5rem;
+    font-size: var(--text-4xl);
   }
   
   .not-found p {
-    font-size: 1rem;
+    font-size: var(--text-base);
+  }
+}
+
+/* Ultra-wide screen adjustments */
+@media (min-width: 1920px) {
+  .container-constrained {
+    max-width: 1600px; /* Prevent content from being too wide on ultra-wide screens */
   }
 }
