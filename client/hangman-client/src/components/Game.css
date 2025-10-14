@@ -198,14 +198,254 @@
 }
 
 .current-score::before {
-    content: '🏆';
-    font-size: var(--text-base);
+    content: "🏆 ";
 }
 
 /* ============================================================================
-   GAME STATUS DISPLAY
+   ENHANCED GAME STATUS DISPLAY - Modern Layout with Hangman Visual
    ============================================================================ */
 
+/* ============================================================================
+   REFINED GAME LAYOUT - Visual Hierarchy Focus
+   ============================================================================ */
+
+.game-main-section {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-8);
+    margin-bottom: var(--space-6);
+    align-items: start;
+}
+
+/* Primary Focus: Hangman Visual Area */
+.hangman-focus-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Secondary: Game Statistics Panel */
+.game-stats-panel {
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-5);
+    min-width: 280px;
+}
+
+.stats-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--primary-700);
+    margin: 0 0 var(--space-4) 0;
+    font-family: var(--font-family-display);
+}
+
+.stats-grid {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+}
+
+.stat-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3);
+    background: var(--neutral-50);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--neutral-200);
+    transition: all var(--transition-normal);
+}
+
+.stat-card:hover {
+    background: var(--primary-50);
+    border-color: var(--primary-200);
+    transform: translateY(-1px);
+}
+
+.stat-label {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-medium);
+    font-family: var(--font-family-primary);
+}
+
+.stat-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-extrabold);
+    color: var(--primary-700);
+    font-family: var(--font-family-display);
+    text-align: center;
+    min-width: 40px;
+}
+
+/* Urgency feedback for low guesses */
+.stat-value.urgent {
+    color: var(--error-600);
+    animation: urgentPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes urgentPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Clear Attempts Visualizer */
+.attempts-visualizer {
+    border-top: 1px solid var(--neutral-200);
+    padding-top: var(--space-4);
+}
+
+.visualizer-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-3);
+    font-family: var(--font-family-primary);
+}
+
+.attempts-slots {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.attempt-slot {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--neutral-300);
+    transition: all var(--transition-normal);
+    position: relative;
+}
+
+.attempt-slot.available {
+    background: var(--neutral-100);
+    border-color: var(--neutral-300);
+}
+
+.attempt-slot.used {
+    background: var(--error-500);
+    border-color: var(--error-600);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+.attempt-slot.used::after {
+    content: '✕';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.attempts-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-primary);
+}
+
+.used-count {
+    font-weight: var(--font-semibold);
+    color: var(--error-600);
+}
+
+.total-count {
+    color: var(--color-text-muted);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN FOR REFINED LAYOUT
+   ============================================================================ */
+
+/* Tablet and smaller screens */
+@media (max-width: 768px) {
+    .game-main-section {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+    
+    .hangman-focus-area {
+        order: 1;
+    }
+    
+    .game-stats-panel {
+        order: 2;
+        min-width: auto;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2);
+    }
+    
+    .stat-value {
+        font-size: var(--text-xl);
+    }
+    
+    .attempts-slots {
+        justify-content: center;
+    }
+    
+    .attempt-slot {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+    .game-main-section {
+        gap: var(--space-3);
+    }
+    
+    .game-stats-panel {
+        padding: var(--space-4);
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+    }
+    
+    .stat-card {
+        padding: var(--space-2);
+    }
+    
+    .stat-value {
+        font-size: var(--text-lg);
+        min-width: 30px;
+    }
+    
+    .attempts-slots {
+        gap: var(--space-1);
+    }
+    
+    .attempt-slot {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .attempt-slot.used::after {
+        font-size: 10px;
+    }
+}
+
+/* Legacy game-status for backward compatibility */
 .game-status {
     text-align: center;
     margin-bottom: var(--space-8);

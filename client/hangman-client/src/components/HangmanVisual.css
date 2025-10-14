@@ -1,0 +1,370 @@
+/* ============================================================================
+   CARTOON-STYLE HANGMAN VISUAL COMPONENT STYLES
+   ============================================================================
+   Clean, focused styles for the cartoon hangman character.
+   Emphasizes visual clarity and smooth animations.
+   ============================================================================ */
+
+.hangman-visual-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    position: relative;
+    max-width: 280px;
+}
+
+.hangman-visual-container:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   SVG HANGMAN FIGURE STYLES
+   ============================================================================ */
+
+.hangman-svg {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Gallows structure styling */
+.gallows line {
+    stroke: #6b7280;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.gallows-base {
+    stroke-width: 5;
+}
+
+.gallows-post,
+.gallows-beam {
+    stroke-width: 4;
+}
+
+.gallows-noose {
+    stroke-width: 3;
+    stroke: #374151;
+}
+
+/* Hangman figure styling */
+.hangman-figure line,
+.hangman-figure circle {
+    stroke: #7c3aed;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.hangman-head {
+    fill: none;
+    stroke-width: 3;
+}
+
+.hangman-body,
+.hangman-left-arm,
+.hangman-right-arm,
+.hangman-left-leg,
+.hangman-right-leg {
+    stroke-width: 3;
+}
+
+/* Face styling for game over state */
+.hangman-face line {
+    stroke: #dc2626;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.hangman-face .mouth {
+    stroke: #dc2626;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+/* ============================================================================
+   CARTOON CHARACTER ANIMATIONS
+   ============================================================================ */
+
+/* Smooth fade-in animation for character parts */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* ============================================================================
+   STATUS BADGE STYLES
+   ============================================================================ */
+
+.status-badge {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-bold);
+    font-size: var(--text-sm);
+    text-align: center;
+    font-family: var(--font-family-primary);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+}
+
+.status-badge.game-over {
+    background: var(--error-600);
+    color: white;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.status-badge.victory {
+    background: var(--success-600);
+    color: white;
+    animation: celebration 1s ease-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+}
+
+@keyframes celebration {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-10deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1) rotate(5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* ============================================================================
+   ENHANCED STATUS DISPLAY STYLES
+   ============================================================================ */
+
+.hangman-status {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+    max-width: 280px;
+}
+
+.guesses-counter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--primary-50);
+    border: 1px solid var(--primary-200);
+    border-radius: var(--radius-xl);
+    transition: all var(--transition-normal);
+}
+
+.counter-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.counter-label {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    font-family: var(--font-family-primary);
+}
+
+.counter-value {
+    color: var(--primary-700);
+    font-weight: var(--font-bold);
+    font-size: var(--text-lg);
+    font-family: var(--font-family-primary);
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--neutral-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient-error);
+    border-radius: var(--radius-full);
+    transition: width var(--transition-slow) ease-out;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Mood Indicator */
+.mood-indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+}
+
+.mood-label {
+    color: var(--color-text-secondary);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    font-family: var(--font-family-primary);
+}
+
+.mood-value {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    font-family: var(--font-family-primary);
+    transition: all var(--transition-normal);
+}
+
+/* Mood-specific styling */
+.mood-happy {
+    color: var(--success-600);
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+.mood-concerned {
+    color: var(--warning-600);
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.mood-worried {
+    color: var(--error-500);
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    animation: worried-shake 0.5s ease-in-out infinite alternate;
+}
+
+.mood-dead {
+    color: var(--error-600);
+    text-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+    animation: dead-pulse 1s ease-in-out infinite;
+}
+
+@keyframes worried-shake {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(2px); }
+}
+
+@keyframes dead-pulse {
+    0%, 100% { 
+        opacity: 0.8; 
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.05);
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+/* Tablet styles */
+@media (max-width: 768px) {
+    .hangman-visual-container {
+        padding: 12px;
+    }
+    
+    .hangman-svg {
+        width: 160px;
+        height: 200px;
+    }
+    
+    .guesses-counter {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    .counter-value {
+        font-size: 14px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 480px) {
+    .hangman-visual-container {
+        padding: 8px;
+    }
+    
+    .hangman-svg {
+        width: 140px;
+        height: 175px;
+    }
+    
+    .guesses-counter {
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .animate-draw {
+        animation: none;
+    }
+    
+    .game-over-text {
+        animation: none;
+    }
+    
+    .hangman-visual-container:hover {
+        transform: none;
+    }
+}

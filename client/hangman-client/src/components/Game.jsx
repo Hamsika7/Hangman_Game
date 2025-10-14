@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { gameAPI, handleAPIError, isAuthenticated, getCurrentUser } from '../services/api';
+import HangmanVisual from './HangmanVisual.jsx';
 import './Game.css';
 
 const Game = () => {
@@ -343,24 +344,7 @@ const Game = () => {
         return 'letter-btn available';
     };
 
-    /**
-     * Get hangman visual representation based on remaining guesses
-     * @param {number} guessesLeft - Number of guesses remaining
-     * @returns {string} Hangman ASCII art or emoji
-     */
-    const getHangmanVisual = (guessesLeft) => {
-        const hangmanStages = [
-            '😵', // 0 guesses left - dead
-            '😰', // 1 guess left - very worried
-            '😨', // 2 guesses left - scared
-            '😟', // 3 guesses left - worried
-            '😐', // 4 guesses left - neutral
-            '🙂', // 5 guesses left - slight smile
-            '😊', // 6 guesses left - happy
-            '😄'  // 7 guesses left - very happy
-        ];
-        return hangmanStages[guessesLeft] || '😄';
-    };
+    // Note: Removed getHangmanVisual function - now using SVG-based HangmanVisual component
 
     // ========================================================================
     // RENDER COMPONENT
@@ -380,19 +364,51 @@ const Game = () => {
                     )}
                 </div>
 
-                {/* Game Status Display */}
-                <div className="game-status">
-                    <div className="hangman-visual">
-                        <span className="hangman-emoji">{getHangmanVisual(guessesLeft)}</span>
-                        <div className="guesses-info">
-                            <span className="guesses-left">Guesses Left: {guessesLeft}</span>
-                            <div className="guess-dots">
+                {/* Refined Game Layout - Focus on Visual Hierarchy */}
+                <div className="game-main-section">
+                    {/* Primary Focus: Hangman Visual */}
+                    <div className="hangman-focus-area">
+                        <HangmanVisual 
+                            guessesLeft={guessesLeft} 
+                            gameStatus={gameStatus}
+                        />
+                    </div>
+                    
+                    {/* Secondary: Game Statistics Panel */}
+                    <div className="game-stats-panel">
+                        <h3 className="stats-title">Game Stats</h3>
+                        <div className="stats-grid">
+                            <div className="stat-card">
+                                <span className="stat-label">Remaining Guesses</span>
+                                <span className={`stat-value ${guessesLeft < 3 ? 'urgent' : ''}`}>
+                                    {guessesLeft}
+                                </span>
+                            </div>
+                            <div className="stat-card">
+                                <span className="stat-label">Letters Guessed</span>
+                                <span className="stat-value">{guessedLetters.size}</span>
+                            </div>
+                            <div className="stat-card">
+                                <span className="stat-label">Word Length</span>
+                                <span className="stat-value">{maskedWord.length}</span>
+                            </div>
+                        </div>
+                        
+                        {/* Clear Attempts Visualizer */}
+                        <div className="attempts-visualizer">
+                            <span className="visualizer-label">Attempts Progress</span>
+                            <div className="attempts-slots">
                                 {Array.from({ length: 7 }, (_, i) => (
-                                    <span 
+                                    <div 
                                         key={i} 
-                                        className={`guess-dot ${i < (7 - guessesLeft) ? 'used' : 'available'}`}
+                                        className={`attempt-slot ${i < (7 - guessesLeft) ? 'used' : 'available'}`}
+                                        title={`Attempt ${i + 1}: ${i < (7 - guessesLeft) ? 'Used' : 'Available'}`}
                                     />
                                 ))}
+                            </div>
+                            <div className="attempts-summary">
+                                <span className="used-count">{7 - guessesLeft} used</span>
+                                <span className="total-count">of 7 total</span>
                             </div>
                         </div>
                     </div>
